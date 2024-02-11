@@ -4,6 +4,14 @@
 
 This project is a mini application that combines Genetic Algorithms and Fuzzy Logic to etc etc
 
+| Matric Number | Name                                    |
+|---------------|-----------------------------------------|
+| 2215359       | ARIF EMRULLAH BIN TAJUL ARIFFIN        |
+| 2219537       | HAMZAH FAISAL                           |
+| 2116281       | MUHAMMAD FADHLUL WAFI BIN AHMAD NAIM   |
+| 2110333       | MUHAMMAD NAUFAL BIN MOHAMMAD BAKRI      |
+
+
 ## Components
 
 ### GUI (PyQt5)
@@ -22,9 +30,3 @@ The Fuzzy Logic component introduces a degree of uncertainty into the decision-m
 
 Matplotlib is used for plotting the results. The Matplotlib canvas dynamically updates to reflect the output of the Genetic Algorithm and Fuzzy Logic.
 
-## How to Run
-
-1. Clone the repository:
-
-   ```bash
-   git clone https://github.com/your-username/your-repo.git
