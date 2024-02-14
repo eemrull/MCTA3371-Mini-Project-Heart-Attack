@@ -13,8 +13,8 @@ from keras.models import Sequential
 
 population_size = 50
 generations = 100
-mutation_rate = 0.03
 crossover_rate = 1
+mutation_rate = 0.03
 
 fuzzy_input_threshold = 0.5
 fuzzy_output_threshold = 0.7
@@ -35,13 +35,13 @@ class MainWindow(QtWidgets.QMainWindow):
 
         self.population_size_input = QtWidgets.QLineEdit(self)
         self.generations_input = QtWidgets.QLineEdit(self)
-        self.mutation_rate_input = QtWidgets.QLineEdit(self)
         self.crossover_rate_input = QtWidgets.QLineEdit(self)
+        self.mutation_rate_input = QtWidgets.QLineEdit(self)
 
         population_label = QtWidgets.QLabel("Population Size:")
         generations_label = QtWidgets.QLabel("Generations:")
-        mutation_rate_label = QtWidgets.QLabel("Mutation Rate:")
         crossover_rate_label = QtWidgets.QLabel("Crossover Rate:")
+        mutation_rate_label = QtWidgets.QLabel("Mutation Rate:")
 
         self.sc = MplCanvas(self, width=5, height=4, dpi=100)
         self.sc.axes.plot([], [])
@@ -79,8 +79,8 @@ class MainWindow(QtWidgets.QMainWindow):
         # input values
         population_size = int(self.population_size_input.text())
         generations = int(self.generations_input.text())
-        mutation_rate = float(self.mutation_rate_input.text())
         crossover_rate = float(self.crossover_rate_input.text())
+        mutation_rate = float(self.mutation_rate_input.text())
 
         # training nn
         mse = self.train_neural_network()
