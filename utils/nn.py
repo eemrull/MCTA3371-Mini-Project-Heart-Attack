@@ -3,7 +3,7 @@ import numpy as np
 
 class Layer:
     def __init__(self, n_inputs: int, n_neurons: int, activation: callable) -> None:
-        self.weights = np.random.randn(n_inputs, n_neurons)
+        self.weights = np.random.randn(n_inputs, n_neurons) * 10
         self.biases = np.zeros((1, n_neurons))
         self.activation = activation
 

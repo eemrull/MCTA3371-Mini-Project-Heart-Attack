@@ -5,11 +5,16 @@ open('metadata.txt', 'w+').close()
 metadata = open('metadata.txt', 'a')
 
 
+# def normalize(column: pd.Series):
+#     mean = np.mean(column)
+#     std = np.std(column)
+#     metadata.write(f'{column.name} {mean} {std}\n')
+#     return (column - mean)/std
+
 def normalize(column: pd.Series):
-    mean = np.mean(column)
-    std = np.std(column)
-    metadata.write(f'{column.name} {mean} {std}\n')
-    return (column - mean)/std
+    max = np.max(column)
+    metadata.write(f'{column.name} {max}\n')
+    return column / max
 
 
 df = pd.read_excel('heart_attack_prediction_dataset.xlsx')
@@ -27,16 +32,16 @@ df.insert(len(df.columns), 'Heart Attack Risk', column_to_move)
 # df['Sex'] = df['Sex'].replace({'Male': 1, 'Female': 0})
 # df['Diet'] = df['Diet'].replace({'Unhealthy': 0, 'Average': 0.5, 'Healthy': 1})
 
-# df['Age'] = normalize(df['Age'])
+df['Age'] = normalize(df['Age'])
 df['Cholesterol'] = normalize(df['Cholesterol'])
 # df['Heart Rate'] = normalize(df['Heart Rate'])
 # df['Exercise Hours Per Week'] = normalize(df['Exercise Hours Per Week'])
 # df['Stress Level'] = df['Stress Level'] / 10
 # df['Sedentary Hours Per Day'] = normalize(df['Sedentary Hours Per Day'])
 # df['Income'] = normalize(df['Income'])
-# df['BMI'] = normalize(df['BMI'])
+df['BMI'] = normalize(df['BMI'])
 df['Triglycerides'] = normalize(df['Triglycerides'])
-# df['Physical Activity Days Per Week'] = df['Physical Activity Days Per Week'] / 10
+df['Physical Activity Days Per Week'] = normalize(df['Physical Activity Days Per Week'])
 # df['Sleep Hours Per Day'] = normalize(df['Sleep Hours Per Day'])
 df['Systolic'] = normalize(df['Systolic'])
 df['Diastolic'] = normalize(df['Diastolic'])
@@ -65,9 +70,10 @@ df = df.drop('Triglycerides', axis=1)
 # print(df['Heart Attack Risk'].value_counts()[0])  # 5624
 amount = 5624 - 3139
 # while amount:
-row_to_remove = np.random.choice(df.loc[df['Heart Attack Risk'] == 0].index, amount, replace=False)
+row_to_remove = np.random.choice(
+    df.loc[df['Heart Attack Risk'] == 0].index, amount, replace=False)
 df = df.drop(row_to_remove)
-df = df.sample(frac = 1)
+df = df.sample(frac=1)
 
 print(f'{" DATA ":#^100}')
 print(df)
