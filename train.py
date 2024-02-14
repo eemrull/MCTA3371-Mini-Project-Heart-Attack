@@ -10,7 +10,7 @@ from threading import Thread
 BATCH_SIZE = 32
 
 
-class Character:
+class Gene:
     def __init__(self) -> None:
         self.nn = [Layer(8, 16, sigmoid),
                    Layer(16, 16, sigmoid),
@@ -30,11 +30,11 @@ class Population:
     X: np.ndarray[np.ndarray]
     y: np.ndarray[np.ndarray]
     generation: int = 0
-    best_character: Character = None
+    best_gene: Gene = None
     thread_stop: bool = False
 
     def __post_init__(self) -> None:
-        self.population = [Character() for _ in range(self.size)]
+        self.population = [Gene() for _ in range(self.size)]
         self.fitnesses: list[float] = []
         self.plt_avg_fitness: list[float] = []
 
@@ -52,35 +52,35 @@ class Population:
         self.fitnesses = []
         random_index = np.random.choice(np.arange(self.X.shape[0]),
                                         size=(BATCH_SIZE,))
-        for character in self.population:
-            result = character.forward(self.X[random_index])
+        for gene in self.population:
+            result = gene.forward(self.X[random_index])
             fitness = np.multiply(result, self.y[random_index])
             self.fitnesses.append(np.sum(np.max(fitness, axis=1)))
         self.plt_avg_fitness.append(np.mean(self.fitnesses))
 
     def generate_new_population(self) -> None:
         new_population = []
-        self.find_best_character()
-        new_population.append(self.best_character)
+        self.find_best_gene()
+        new_population.append(self.best_gene)
 
         parents = np.random.choice(self.population,
                                    self.size*2,
                                    p=self.fitnesses/np.sum(self.fitnesses))
-        new_character = Character()
+        new_gene = Gene()
         rand_mask_weights = []
         rand_mask_biases = []
-        for new_layer in new_character.nn:
+        for new_layer in new_gene.nn:
             rand_mask_weights.append(np.random.choice([True, False],
                                                       size=[self.size] + list(new_layer.weights.shape))[0])
             rand_mask_biases.append(np.random.choice([True, False],
                                                      size=[self.size] + list(new_layer.biases.shape))[0])
         while (current_length := len(new_population)) < self.size:
-            parent_A: Character = parents[current_length]
-            parent_B: Character = parents[current_length+self.size]
+            parent_A: Gene = parents[current_length]
+            parent_B: Gene = parents[current_length+self.size]
 
-            new_character = Character()
+            new_gene = Gene()
 
-            for i, (new_layer, layer_A, layer_B) in enumerate(zip(new_character.nn, parent_A.nn, parent_B.nn)):
+            for i, (new_layer, layer_A, layer_B) in enumerate(zip(new_gene.nn, parent_A.nn, parent_B.nn)):
                 new_layer.weights[rand_mask_weights[i]] = \
                     layer_A.weights[rand_mask_weights[i]].copy()
                 new_layer.weights[~rand_mask_weights[i]] = \
@@ -97,16 +97,16 @@ class Population:
                 mutation_slice = random_array < self.mutation_rate
                 new_layer.biases[mutation_slice] += np.random.uniform(-0.1, 0.1)
 
-            new_population.append(new_character)
+            new_population.append(new_gene)
 
         del self.population
         self.population = new_population
         self.generation += 1
 
-    def find_best_character(self) -> None:
-        choosen_character = self.population[np.argmax(self.fitnesses)]
-        self.best_character = Character()
-        for best_layer, choosen_layer in zip(self.best_character.nn, choosen_character.nn):
+    def find_best_gene(self) -> None:
+        choosen_gene = self.population[np.argmax(self.fitnesses)]
+        self.best_gene = Gene()
+        for best_layer, choosen_layer in zip(self.best_gene.nn, choosen_gene.nn):
             best_layer.weights = choosen_layer.weights.copy()
             best_layer.biases = choosen_layer.biases.copy()
 
@@ -132,9 +132,9 @@ def main():
 
         print('Training stopped')
         population.calculate_fitness()
-        population.find_best_character()
-        with open('best_character.pickle', 'wb') as f:
-            pickle.dump(population.best_character,
+        population.find_best_gene()
+        with open('best_gene.pickle', 'wb') as f:
+            pickle.dump(population.best_gene,
                         f,
                         protocol=pickle.HIGHEST_PROTOCOL)
         import test
@@ -145,9 +145,9 @@ def main():
         population.thread_stop = True
         thread.join()
         population.calculate_fitness()
-        population.find_best_character()
-        with open('best_character.pickle', 'wb') as f:
-            pickle.dump(population.best_character,
+        population.find_best_gene()
+        with open('best_gene.pickle', 'wb') as f:
+            pickle.dump(population.best_gene,
                         f,
                         protocol=pickle.HIGHEST_PROTOCOL)
         import test
