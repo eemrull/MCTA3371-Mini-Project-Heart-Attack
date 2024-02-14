@@ -11,7 +11,7 @@ class HeartAttackGUI(QMainWindow):
 
     def initUI(self):
         self.setWindowTitle('Heart Attack Risk Prediction')
-        self.setGeometry(100, 100, 600, 300)
+        self.setGeometry(100, 100, 700, 300)
 
         # Labels for input boxes
         self.metadata = self.loadMetadata('metadata.txt')
