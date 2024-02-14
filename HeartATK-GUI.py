@@ -1,122 +1,66 @@
 import sys
-import random
-import matplotlib
-import pandas as pd
-from PyQt5 import QtWidgets
-from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
-from matplotlib.figure import Figure
-from sklearn.metrics import mean_squared_error
-import tensorflow as tf
-from tensorflow import keras
-from keras.layers import Dense
-from keras.models import Sequential
+import pickle
+import numpy as np
+from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel, QPushButton, QVBoxLayout, QWidget, QLineEdit, QMessageBox
+from train import Gene
 
-population_size = 50
-generations = 100
-crossover_rate = 1
-mutation_rate = 0.03
+class HeartAttackGUI(QMainWindow):
+    def __init__(self):
+        super().__init__()
+        self.initUI()
 
-fuzzy_input_threshold = 0.5
-fuzzy_output_threshold = 0.7
+    def initUI(self):
+        self.setWindowTitle('Heart Attack Risk Prediction')
+        self.setGeometry(100, 100, 600, 300)
 
-items = [
-    ("heart", 2, 10)
-]
+        # Labels for input boxes
+        self.metadata = self.loadMetadata('metadata.txt')
+        self.labels = [label.split()[0] for label in self.metadata]
+        self.inputBoxes = {label: QLineEdit() for label in self.labels}
 
-class MplCanvas(FigureCanvasQTAgg):
-    def __init__(self, parent=None, width=5, height=4, dpi=100):
-        fig = Figure(figsize=(width, height), dpi=dpi)
-        self.axes = fig.add_subplot(111)
-        super(MplCanvas, self).__init__(fig)
+        # Button
+        self.predictButton = QPushButton('Predict')
+        self.predictButton.clicked.connect(self.predictHeartAttack)
 
-class MainWindow(QtWidgets.QMainWindow):
-    def __init__(self, *args, **kwargs):
-        super(MainWindow, self).__init__(*args, **kwargs)
+        # Layout
+        layout = QVBoxLayout()
+        for label in self.labels:
+            layout.addWidget(QLabel(label))
+            layout.addWidget(self.inputBoxes[label])
+        layout.addWidget(self.predictButton)
 
-        self.population_size_input = QtWidgets.QLineEdit(self)
-        self.generations_input = QtWidgets.QLineEdit(self)
-        self.crossover_rate_input = QtWidgets.QLineEdit(self)
-        self.mutation_rate_input = QtWidgets.QLineEdit(self)
+        centralWidget = QWidget()
+        centralWidget.setLayout(layout)
+        self.setCentralWidget(centralWidget)
 
-        population_label = QtWidgets.QLabel("Population Size:")
-        generations_label = QtWidgets.QLabel("Generations:")
-        crossover_rate_label = QtWidgets.QLabel("Crossover Rate:")
-        mutation_rate_label = QtWidgets.QLabel("Mutation Rate:")
+    def loadMetadata(self, filename):
+        # Read metadata from file
+        with open(filename, 'r') as f:
+            metadata = [line.strip() for line in f.readlines()]
+        return metadata
 
-        self.sc = MplCanvas(self, width=5, height=4, dpi=100)
-        self.sc.axes.plot([], [])
-        self.sc.draw()
+    def predictHeartAttack(self):
+        # Load trained model
+        with open('best_gene.pickle', 'rb') as f:
+            self.gene: Gene = pickle.load(f)
 
-        # run NN Button
-        run_button = QtWidgets.QPushButton("Run Neural Network", self)
-        run_button.clicked.connect(self.run_neural_network)
+        # Get input values
+        input_values = []
+        for label in self.labels:
+            value = float(self.inputBoxes[label].text())
+            input_values.append(value)
 
-        # layouts
-        layout = QtWidgets.QVBoxLayout()
-        layout.addWidget(population_label)
-        layout.addWidget(self.population_size_input)
-        layout.addWidget(generations_label)
-        layout.addWidget(self.generations_input)
-        layout.addWidget(mutation_rate_label)
-        layout.addWidget(self.mutation_rate_input)
-        layout.addWidget(crossover_rate_label)
-        layout.addWidget(self.crossover_rate_input)
-        layout.addWidget(run_button)
+        # Predict heart attack risk
+        prediction = self.gene.forward(np.array(input_values).reshape(1, -1))
 
-        input_widget = QtWidgets.QWidget()
-        input_widget.setLayout(layout)
+        # Display prediction result
+        if np.argmax(prediction) == 1:
+            QMessageBox.information(self, 'Prediction Result', 'You are at risk of heart attack.')
+        else:
+            QMessageBox.information(self, 'Prediction Result', 'You are not at risk of heart attack.')
 
-        central_layout = QtWidgets.QHBoxLayout()
-        central_layout.addWidget(input_widget)
-        central_layout.addWidget(self.sc)
-        central_widget = QtWidgets.QWidget()
-        central_widget.setLayout(central_layout)
-
-        self.setCentralWidget(central_widget)
-        self.show()
-
-    def run_neural_network(self):
-        # input values
-        population_size = int(self.population_size_input.text())
-        generations = int(self.generations_input.text())
-        crossover_rate = float(self.crossover_rate_input.text())
-        mutation_rate = float(self.mutation_rate_input.text())
-
-        # training nn
-        mse = self.train_neural_network()
-
-        # plot
-        self.plot_results(mse)
-
-    def train_neural_network(self):
-        # dummy data 
-        X_train = tf.constant([[1, 2], [2, 3], [3, 4]])
-        y_train = tf.constant([1, 2, 3])
-
-        # build simple model
-        model = Sequential([
-            Dense(10, activation='relu', input_shape=(2,)),
-            Dense(1)
-        ])
-        model.compile(optimizer='adam', loss='mean_squared_error')
-
-        # train
-        model.fit(X_train, y_train, epochs=10, verbose=0)
-
-        # calculate mean squared error
-        y_pred = model.predict(X_train)
-        mse = mean_squared_error(y_train, y_pred)
-
-        return mse
-
-    def plot_results(self, mse):
-        # plot mse
-        self.sc.axes.clear()
-        self.sc.axes.plot([0, 1], [mse, mse], label='Mean Squared Error')
-        self.sc.axes.legend()
-        self.sc.draw()
-
-if __name__ == "__main__":
-    app = QtWidgets.QApplication(sys.argv)
-    w = MainWindow()
+if __name__ == '__main__':
+    app = QApplication(sys.argv)
+    ex = HeartAttackGUI()
+    ex.show()
     sys.exit(app.exec_())
