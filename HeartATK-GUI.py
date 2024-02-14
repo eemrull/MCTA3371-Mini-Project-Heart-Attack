@@ -6,6 +6,10 @@ from PyQt5 import QtWidgets
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from matplotlib.figure import Figure
 from sklearn.metrics import mean_squared_error
+import tensorflow as tf
+from tensorflow import keras
+from keras.layers import Dense
+from keras.models import Sequential
 
 population_size = 50
 generations = 100
@@ -39,16 +43,13 @@ class MainWindow(QtWidgets.QMainWindow):
         mutation_rate_label = QtWidgets.QLabel("Mutation Rate:")
         crossover_rate_label = QtWidgets.QLabel("Crossover Rate:")
 
-
         self.sc = MplCanvas(self, width=5, height=4, dpi=100)
-
-
         self.sc.axes.plot([], [])
         self.sc.draw()
 
-        # run GA Button
-        run_button = QtWidgets.QPushButton("Run Genetic Algorithm", self)
-        run_button.clicked.connect(self.run_genetic_algorithm)
+        # run NN Button
+        run_button = QtWidgets.QPushButton("Run Neural Network", self)
+        run_button.clicked.connect(self.run_neural_network)
 
         # layouts
         layout = QtWidgets.QVBoxLayout()
@@ -62,11 +63,9 @@ class MainWindow(QtWidgets.QMainWindow):
         layout.addWidget(self.crossover_rate_input)
         layout.addWidget(run_button)
 
-    
         input_widget = QtWidgets.QWidget()
         input_widget.setLayout(layout)
 
-    
         central_layout = QtWidgets.QHBoxLayout()
         central_layout.addWidget(input_widget)
         central_layout.addWidget(self.sc)
@@ -76,53 +75,44 @@ class MainWindow(QtWidgets.QMainWindow):
         self.setCentralWidget(central_widget)
         self.show()
 
-    def run_genetic_algorithm(self):
-        
+    def run_neural_network(self):
+        # input values
         population_size = int(self.population_size_input.text())
         generations = int(self.generations_input.text())
         mutation_rate = float(self.mutation_rate_input.text())
         crossover_rate = float(self.crossover_rate_input.text())
 
-        
-        genetic_algorithm_output = self.genetic_algorithm(population_size, generations, mutation_rate, crossover_rate)
+        # training nn
+        mse = self.train_neural_network()
 
-        
-        fuzzy_output = self.fuzzy_logic_system(genetic_algorithm_output['population'],
-                                               genetic_algorithm_output['fitness_scores'])
+        # plot
+        self.plot_results(mse)
 
-        
-        combined_output = self.combine_genetic_and_fuzzy(genetic_algorithm_output, fuzzy_output)
+    def train_neural_network(self):
+        # dummy data 
+        X_train = tf.constant([[1, 2], [2, 3], [3, 4]])
+        y_train = tf.constant([1, 2, 3])
 
-        
-        self.plot_results(combined_output)
+        # build simple model
+        model = Sequential([
+            Dense(10, activation='relu', input_shape=(2,)),
+            Dense(1)
+        ])
+        model.compile(optimizer='adam', loss='mean_squared_error')
 
-    def genetic_algorithm(self, population_size, generations, mutation_rate, crossover_rate):
-        # Your genetic algorithm logic here
-        # ...
+        # train
+        model.fit(X_train, y_train, epochs=10, verbose=0)
 
-        # Example: A dummy genetic algorithm that returns random results
-        population = [tuple(random.choices([0, 1], k=len(items))) for _ in range(population_size)]
-        fitness_scores = [random.random() for _ in range(population_size)]
+        # calculate mean squared error
+        y_pred = model.predict(X_train)
+        mse = mean_squared_error(y_train, y_pred)
 
-        return {'population': population, 'fitness_scores': fitness_scores}
+        return mse
 
-    def fuzzy_logic_system(self, population, fitness_scores):
-        
-        fuzzy_input = [random.random() for _ in range(len(population))]
-        fuzzy_output = [random.random() for _ in range(len(population))]
-
-        return {'fuzzy_input': fuzzy_input, 'fuzzy_output': fuzzy_output}
-
-    def combine_genetic_and_fuzzy(self, genetic_output, fuzzy_output):
-        
-        combined_output = mean_squared_error(genetic_output['fitness_scores'], fuzzy_output['fuzzy_output'])
-
-        return combined_output
-
-    def plot_results(self, combined_output):
-        
+    def plot_results(self, mse):
+        # plot mse
         self.sc.axes.clear()
-        self.sc.axes.plot([0, 1], [combined_output, combined_output], label='Combined Output')
+        self.sc.axes.plot([0, 1], [mse, mse], label='Mean Squared Error')
         self.sc.axes.legend()
         self.sc.draw()
 
