@@ -7,7 +7,7 @@ import pstats
 import matplotlib.pyplot as plt
 from threading import Thread
 
-BATCH_SIZE = 32
+BATCH_SIZE = 128
 
 
 class Gene:
@@ -41,8 +41,11 @@ class Population:
     def plt_data(self) -> None:
         while not self.thread_stop:
             plt.clf()
+            plt.xlabel('generation')
+            plt.ylabel('fitness')
             plt.plot(self.plt_avg_fitness)
             plt.pause(1)
+        plt.savefig('plot.png')
 
     @property
     def mutation_rate(self) -> float:
@@ -56,7 +59,7 @@ class Population:
             result = gene.forward(self.X[random_index])
             fitness = np.multiply(result, self.y[random_index])
             self.fitnesses.append(np.sum(np.max(fitness, axis=1)))
-        self.plt_avg_fitness.append(np.mean(self.fitnesses))
+        self.plt_avg_fitness.append(np.mean(self.fitnesses)/BATCH_SIZE)
 
     def generate_new_population(self) -> None:
         new_population = []
@@ -118,13 +121,13 @@ def main():
     try:
         thread = Thread(target=population.plt_data)
         thread.start()
-        while True:
-            # for _ in range(100):
+        # while True:
+        for _ in range(2000):
             population.calculate_fitness()
             population.generate_new_population()
             print(f'Generation: {population.generation:5d}',
-                  f'Average Fitness: {np.mean(population.fitnesses):0.5f}',
-                  f'Best Fitness: {np.max(population.fitnesses):0.5f}',
+                  f'Average Fitness: {np.mean(population.fitnesses)/BATCH_SIZE:0.5f}',
+                  f'Best Fitness: {np.max(population.fitnesses)/BATCH_SIZE:0.5f}',
                   f'Mutation Rate: {population.mutation_rate:0.5f}',
                   sep='     ')
         population.thread_stop = True
