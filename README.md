@@ -1,16 +1,15 @@
-# MCTA 3371 Mini Project GUI: Genetic Algorithm and Fuzzy Logic
+# MCTA 3371 Mini Project GUI: Genetic Algorithm and Neural Network
 
 ## Overview
 
-This project is a mini application that combines Genetic Algorithms and Fuzzy Logic to etc etc
+This project is a mini application that combines Genetic Algorithms and Neural Network to predict Heart Risk problems.
 
-| Matric Number | Name                                    |
-|---------------|-----------------------------------------|
-| 2215359       | ARIF EMRULLAH BIN TAJUL ARIFFIN        |
-| 2219537       | HAMZAH FAISAL                           |
-| 2116281       | MUHAMMAD FADHLUL WAFI BIN AHMAD NAIM   |
-| 2110333       | MUHAMMAD NAUFAL BIN MOHAMMAD BAKRI      |
-
+| Matric Number | Name                                 |
+| ------------- | ------------------------------------ |
+| 2215359       | ARIF EMRULLAH BIN TAJUL ARIFFIN      |
+| 2219537       | HAMZAH FAISAL                        |
+| 2116281       | MUHAMMAD FADHLUL WAFI BIN AHMAD NAIM |
+| 2110333       | MUHAMMAD NAUFAL BIN MOHAMMAD BAKRI   |
 
 ## Components
 
@@ -22,11 +21,6 @@ The GUI is implemented using PyQt5, a set of Python bindings for Qt libraries. I
 
 The Genetic Algorithm is responsible for evolving a population of potential solutions to the knapsack problem over several generations. It includes parameters such as population size, mutation rate, and crossover rate.
 
-### Fuzzy Logic
-
-The Fuzzy Logic component introduces a degree of uncertainty into the decision-making process. In this context, it provides a fuzzy input and output based on the genetic algorithm's results.
-
 ### Matplotlib
 
 Matplotlib is used for plotting the results. The Matplotlib canvas dynamically updates to reflect the output of the Genetic Algorithm and Fuzzy Logic.
-
