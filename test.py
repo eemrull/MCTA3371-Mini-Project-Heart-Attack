@@ -16,4 +16,6 @@ with open('best_gene.pickle', 'rb') as f:
             correct += 1
         print(f'{np.argmax(value.flatten())} {np.argmax(y)} {np.max(value)} {value} {y}')
     print(correct/len(y_test))
+    print(len(y_train))
+    print(len(y_test))
     # print(gene.nn[0].weights)
