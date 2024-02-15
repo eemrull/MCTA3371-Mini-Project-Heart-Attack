@@ -17,14 +17,6 @@ This project is a mini application that combines Genetic Algorithms and Neural N
 
 The GUI is implemented using PyQt5, a set of Python bindings for Qt libraries. It includes input boxes for users to specify parameters and a Matplotlib canvas to visualize the results.
 
-### Genetic Algorithm
-
-The Genetic Algorithm is responsible for evolving a population of potential solutions to the knapsack problem over several generations. It includes parameters such as population size, mutation rate, and crossover rate.
-
-### Neural Network
-
-The Neural Network is implemented using TensorFlow and Keras. It is trained on the provided heart risk dataset to predict the likelihood of an individual experiencing heart problems. The network architecture includes multiple layers with configurable activation functions.
-
 ### Files
 
     train.py: Script containing the training logic for the Genetic Algorithm and Neural Network.
