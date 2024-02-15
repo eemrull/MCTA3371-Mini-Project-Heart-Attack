@@ -43,11 +43,12 @@ class HeartAttackGUI(QMainWindow):
         # Load trained model
         with open('best_gene.pickle', 'rb') as f:
             self.gene: Gene = pickle.load(f)
-
+        
+        maxs = [float(label.split()[-1]) for label in self.metadata]
         # Get input values
         input_values = []
-        for label in self.labels:
-            value = float(self.inputBoxes[label].text())
+        for label, max in zip(self.labels, maxs):
+            value = float(self.inputBoxes[label].text())/max
             input_values.append(value)
 
         # Predict heart attack risk
