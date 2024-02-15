@@ -33,4 +33,4 @@ The Neural Network is implemented using TensorFlow and Keras. It is trained on t
     activations.py: Activation functions used in the Neural Network.
     nn.py: Neural Network classes and layers.
     data.csv: Sample dataset containing heart risk data.
-    best_character.pickle: Pickle file containing the trained Neural Network model.
+    best_gene.pickle: Pickle file containing the trained Neural Network model.
