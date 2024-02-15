@@ -15,7 +15,7 @@ class HeartAttackGUI(QMainWindow):
 
         # Labels for input boxes
         self.metadata = self.loadMetadata('metadata.txt')
-        self.labels = [label.split()[0] for label in self.metadata]
+        self.labels = [' '.join(label.split()[0:-1]) for label in self.metadata]
         self.inputBoxes = {label: QLineEdit() for label in self.labels}
 
         # Button

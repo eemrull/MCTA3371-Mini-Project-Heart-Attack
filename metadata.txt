@@ -1,8 +1,8 @@
 Age 90
-Cholesterol 400
-Smoking 1
-Diabetes 1
-BMI 39.9972108155725
+Cholesterol (mg) 400
+Smoking (No:0 / Yes:1) 1
+Diabetes (No:0 / Yes:1) 1
+BMI (kg/m^2) 39.9972108155725
 Physical Activity Days Per Week 7
-Systolic 180.0
-Diastolic 110.0
+Systolic (Hg*mm) 180.0
+Diastolic (Hg*mm) 110.0
