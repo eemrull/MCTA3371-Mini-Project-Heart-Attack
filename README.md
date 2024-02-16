@@ -15,7 +15,7 @@ This project is a mini application that combines Genetic Algorithms and Neural N
 
 ### GUI (PyQt5)
 
-The GUI is implemented using PyQt5, a set of Python bindings for Qt libraries. It includes input boxes for users to specify parameters and a Matplotlib canvas to visualize the results.
+The GUI is implemented using PyQt5, a set of Python bindings for Qt libraries. It includes input boxes for users to specify parameters.
 
 ### Files
 
